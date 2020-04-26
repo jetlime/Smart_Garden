@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Smart Garden</string>
+    <string name="button">Button</string>
+    <string name="ADD">Add a Plant</string>
+    <string name="ADDplant">Add a new plant</string>
+    <string name="Plantname">Plant name :</string>
+    <string name="PlantDescription">Description</string>
+    <string name="Camlink">IP camera link</string>
+    <string name="ALERT">Alert(s) :</string>
+    <string name="settings">Settings</string>
+</resources>
