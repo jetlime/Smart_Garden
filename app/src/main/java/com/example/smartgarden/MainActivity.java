@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.NetworkOnMainThreadException;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -13,7 +14,8 @@ import android.widget.TextView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.w3c.dom.Text;
-
+import java.io.*;
+import java.net.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,26 +66,18 @@ public class MainActivity extends AppCompatActivity {
         TextView lamps = (TextView) findViewById(R.id.lampstatus);
         ArrayList<String> lampStatus = new ArrayList<>();
 
-        try
-        {
-            URLConnection feedUrl = new URL("https://messir.uni.lu/bicslab/cnnResult.txt").openConnection();
-            InputStream is = feedUrl.getInputStream();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-            String line = " ";
-            // read line by line
-            while (line != null) {
-                line = reader.readLine();
-                // add line to list
+        URL url = null;
+        try {
+            url = new URL("https://messir.uni.lu/bicslab");
+            BufferedReader reader = new BufferedReader(new FileReader("/cnnResult.txt"));
+            String line = reader.readLine();
+            while(line != null){
                 lampStatus.add(line);
             }
-            // close input stream
-            is.close();
-            // return the list of lamp status
-
-        }
-        catch (Exception e)
-        {
+        } catch (MalformedURLException | FileNotFoundException e) {
+            lamps.setText("Data not found");
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
