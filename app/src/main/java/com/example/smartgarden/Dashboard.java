@@ -25,6 +25,8 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.util.HashMap;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -78,8 +80,8 @@ public class Dashboard extends AppCompatActivity {
             });
 
 
-        
-        
+
+
         // define the button "add a plant" which is in the corresponding xml file
         Button button = (Button) findViewById(R.id.button);
         // when the button is clicked, open call openAdd_A_Plant() function
@@ -128,20 +130,36 @@ public class Dashboard extends AppCompatActivity {
             String name = intent.getStringExtra(AddAPlant.EXTRA_TEXT1);
             String description = intent.getStringExtra(AddAPlant.EXTRA_TEXT2);
             String url = intent.getStringExtra(AddAPlant.EXTRA_TEXT3);
+            /*
+            JSONObject jsonObject = new JSONObject("data from file");
+            JSONArray jsonArray =  jsonObject.getJSONArray("plants");
 
-            JSONObject jsonObj= new JSONObject();
+            JSONObject jsonObj = new JSONObject();
 
             try {
                 jsonObj.put("name", name);
                 jsonObj.put("description", description);
                 jsonObj.put("cameralink", url);
+                jsonArray = jsonArray.put(jsonObj);
+                jsonObject = jsonObject.put("plants", jsonArray);
 
+                //convert json object to string
+                String data = jsonObject.toString();
+
+                Context context = this;
+                FileOutputStream fout = context.openFileOutput("./assets/plants.json", Context.MODE_PRIVATE);
+                fout.write(data.getBytes());
             } catch (JSONException e) {
                 // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             plantArray = new JSONArray();
             plantArray.put(jsonObj);
+            */
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -201,6 +219,9 @@ public class Dashboard extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void writeJson(View view) {
+
+    }
 
 }
 
