@@ -34,6 +34,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -51,6 +54,8 @@ public class Dashboard extends AppCompatActivity {
     // init the empty Arraylist names containing Strings
     private ArrayList<String> names ;
     private ArrayAdapter<String> arrayAdapter;
+    public static final String EXTRA_NUMBER = "com.example.smartgarden.EXTRA_NUMBER";
+
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,8 +103,6 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
-
-
         // create a new cache file in the devices Internal Storage
         // the name of the file is plants.json
         // in order to see the devices file explorer : View -> Tool Windows -> Device file explorer
@@ -113,7 +116,11 @@ public class Dashboard extends AppCompatActivity {
             String plantName = intent.getStringExtra(AddAPlant.EXTRA_TEXT1);
             String plantDescription = intent.getStringExtra(AddAPlant.EXTRA_TEXT2);
             String plantCamera = intent.getStringExtra(AddAPlant.EXTRA_TEXT3);
-
+             if(plantName==null){
+                 plantName = "";
+                 plantDescription = "";
+                 plantCamera = "";
+             }
             // fetch json from asset folder( in order to get the structure)
             // object jsonPlants is the json from the asset folder
             JSONObject jsonPlants = new JSONObject(loadJSONFromAsset());
@@ -124,8 +131,9 @@ public class Dashboard extends AppCompatActivity {
             try {
                 // put the input of the user in this new json object
                 jsonObj.put("name", plantName);
-                jsonObj.put("description", plantDescription);
-                jsonObj.put("cameralink", plantCamera);
+                jsonObj.put("decription", plantDescription );
+                jsonObj.put("CameraLink", plantCamera );
+
                 // put the new json object into the json array
                 jsonArray = jsonArray.put(jsonObj);
                 jsonPlants = jsonPlants.put("plants", jsonArray);
@@ -142,6 +150,7 @@ public class Dashboard extends AppCompatActivity {
             bw.write(jsonString);
             bw.close();
             // new json is now in internal storage
+
         } catch (IOException | JSONException e) {
             e.printStackTrace();
             // on exception null will be returned
@@ -164,11 +173,12 @@ public class Dashboard extends AppCompatActivity {
             fileContent = null;
         }
 
+
         // code to open Json file in internal storage of the device and display it in the list view
         try {
             BufferedReader br = new BufferedReader(new FileReader(cacheFile));
+            JSONObject obj = new JSONObject(loadJSONFromInternal());
 
-            JSONObject obj = new JSONObject(loadJSONFromAsset());
             JSONArray plantArray = obj.getJSONArray("plants");
             // define te arraylist names as empty
             names = new ArrayList<String>();
@@ -189,9 +199,9 @@ public class Dashboard extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    //position = position.toString();
-                    //String itemPosition = position;
+                    int number = position;
                     Intent intent = new Intent(view.getContext(), myPlants.class);
+                    intent.putExtra(EXTRA_NUMBER, number);
                     startActivity(intent);
                 }
             });
@@ -255,14 +265,72 @@ public class Dashboard extends AppCompatActivity {
         return json;
 
     }
+    public String loadJSONFromInternal() {
+        // init object json of type string
+        String json = null;
+        try {
+            // open the json file from asset file
+            InputStream is = openFileInput("plants.json");
+
+            int size = is.available();
+
+            byte[] buffer = new byte[size];
+
+            is.read(buffer);
+
+            is.close();
+
+            json = new String(buffer, "UTF-8");
+
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+
+    }
+    // read from internal storage the json file
+    private String readFromFile() {
+
+        String ret = "";
+        InputStream inputStream = null;
+        try {
+            inputStream = openFileInput("plants.json");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return ret;
+    }
 
     // function to open add a plant page.
     public void openAdd_A_Plant() {
         Intent intent = new Intent(this, AddAPlant.class);
         startActivity(intent);
     }
-
-
-
 }
 

@@ -93,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
                         for(int i=1; i<5;i++){
                             str = in.readLine();
                             if(str == "ok"){
-                                str = "Lamp is working";
+                                str = "Lamp is on";
                                 lamp1.setTextColor(Color.GREEN);
                                 lamp2.setTextColor(Color.GREEN);
                                 lamp3.setTextColor(Color.GREEN);
                                 lamp4.setTextColor(Color.GREEN);
                             }else {
-                                str = "Lamp " + i +" is not working";
+                                str = "Lamp " + i +" is off";
                                 lamp1.setTextColor(Color.RED);
                                 lamp2.setTextColor(Color.RED);
                                 lamp3.setTextColor(Color.RED);
@@ -116,19 +116,6 @@ public class MainActivity extends AppCompatActivity {
                                 lamp4.setText(str);
                             }
                         }
-                        /*while ((str = in.readLine()) != null) {
-                            i += 1;
-                            if(i==1){
-                                lamp1.setText(str);
-                            }else if (i==2){
-                                lamp2.setText(str);
-                            }else if(i==3){
-                                lamp3.setText(str);
-                            }else if(i==4){
-                                lamp4.setText(str);
-                            }
-                        }*/
-
                         in.close();
                     } catch (MalformedURLException e) {
 
@@ -145,8 +132,4 @@ public class MainActivity extends AppCompatActivity {
         });
 
         thread.start();
-
-
-
-
     }}

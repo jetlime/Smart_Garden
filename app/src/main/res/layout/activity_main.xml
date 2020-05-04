@@ -67,49 +67,45 @@
         android:id="@+id/lamp1"
         android:layout_width="237dp"
         android:layout_height="47dp"
-        android:layout_marginEnd="144dp"
-        android:layout_marginRight="144dp"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.666" />
 
     <TextView
         android:id="@+id/lamp2"
-        android:layout_width="239dp"
-        android:layout_height="43dp"
-        android:layout_marginEnd="144dp"
-        android:layout_marginRight="144dp"
+        android:layout_width="237dp"
+        android:layout_height="47dp"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.748" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <TextView
         android:id="@+id/lamp3"
-        android:layout_width="222dp"
-        android:layout_height="46dp"
-        android:layout_marginEnd="160dp"
-        android:layout_marginRight="160dp"
+        android:layout_width="237dp"
+        android:layout_height="47dp"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.824" />
+        app:layout_constraintVertical_bias="0.843" />
 
     <TextView
         android:id="@+id/lamp4"
-        android:layout_width="220dp"
-        android:layout_height="38dp"
-        android:layout_marginEnd="164dp"
-        android:layout_marginRight="164dp"
+        android:layout_width="237dp"
+        android:layout_height="47dp"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.901" />
+        app:layout_constraintVertical_bias="0.929" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
