@@ -1,17 +1,25 @@
 package com.example.smartgarden;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.bluetooth.BluetoothManager;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.JsonReader;
@@ -40,6 +48,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.net.URI;
 import java.util.HashMap;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
@@ -58,12 +67,17 @@ import java.util.ArrayList;
 
 
 public class Dashboard extends AppCompatActivity implements ExampleDialog.ExampleDialogListerner {
+    private static final int IMAGE_CAPTURE_CODE = 1001 ;
     // init the empty Arraylist names containing Strings
     private ArrayList<String> names ;
     private ArrayAdapter<String> arrayAdapter;
     public JSONArray jsonArray;
     public int DeleteCounter ;
     public static final String EXTRA_NUMBER = "com.example.smartgarden.EXTRA_NUMBER";
+    JSONObject jsonPlants;
+    JSONObject obj;
+    private static final int PERMISSION_CODE = 1000;
+    Uri image_uri;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -99,7 +113,25 @@ public class Dashboard extends AppCompatActivity implements ExampleDialog.Exampl
                 }
             });
 
-
+        // create button that allows to take a picture
+        Button takePicture = (Button) findViewById(R.id.TakePicure);
+        takePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(Manifest.permission.CAMERA)
+                            == PackageManager.PERMISSION_DENIED ||
+                            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+                        String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                        requestPermissions(permission,PERMISSION_CODE);
+                    } else {
+                        openCamera();
+                    }
+                } else {
+                    openCamera();
+                }
+            }
+        });
 
 
         // define the button "add a plant" which is in the corresponding xml file
@@ -129,11 +161,17 @@ public class Dashboard extends AppCompatActivity implements ExampleDialog.Exampl
             // this will avoid to create a new plant each time we go in the dashboard.
             if(plantName != null) {
                 // load json from internal storage
-                JSONObject jsonPlants = new JSONObject(loadJSONFromInternal());
                 // fetch json from asset folder( in order to get the structure)
                 // object jsonPlants is the json from the asset folder
-                JSONArray jsonArray = jsonPlants.getJSONArray("plants");
 
+
+                try{
+                    jsonPlants = new JSONObject(loadJSONFromInternal());
+                } catch (JSONException e) {
+                    jsonPlants = new JSONObject(loadJSONFromAsset());
+                }
+
+                jsonArray = jsonPlants.getJSONArray("plants");
 
                 // create an empty json object
                 JSONObject jsonObj = new JSONObject();
@@ -188,7 +226,13 @@ public class Dashboard extends AppCompatActivity implements ExampleDialog.Exampl
         // code to open Json file in internal storage of the device and display it in the list view
         try {
             BufferedReader br = new BufferedReader(new FileReader(cacheFile));
-            JSONObject obj = new JSONObject(loadJSONFromInternal());
+
+            try{
+                obj = new JSONObject(loadJSONFromInternal());
+            } catch (JSONException e) {
+                obj = new JSONObject(loadJSONFromAsset());
+            }
+
 
             JSONArray plantArray = obj.getJSONArray("plants");
             // define te arraylist names as empty
@@ -243,6 +287,68 @@ public class Dashboard extends AppCompatActivity implements ExampleDialog.Exampl
 
     }
 
+    private void openCamera() {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "new picture");
+        values.put(MediaStore.Images.Media.DESCRIPTION, "from camera");
+        image_uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Intent CameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        CameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
+        startActivityForResult(CameraIntent, IMAGE_CAPTURE_CODE);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode){
+            case PERMISSION_CODE:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    openCamera();
+                } else {
+                    openCamera();
+                    Toast.makeText(this, "Permission Allowed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            saveToInternalStorage(image_uri);
+            Toast.makeText(this, "Picture sent to Server, please wait", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, imageSendToServer.class);
+            startActivity(intent);
+
+        }
+    }
+
+    private String saveToInternalStorage(Uri uriImage){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,"profile.jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uriImage);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
+    }
     public void openDialog(){
         ExampleDialog dialog = new ExampleDialog();
         dialog.show(getSupportFragmentManager(), "example dialog");
