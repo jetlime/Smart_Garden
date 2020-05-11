@@ -16,6 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,6 +33,7 @@ public class EditaPlant extends AppCompatActivity {
     JSONObject json;
     JSONArray plantArray;
     JSONObject plant;
+    File cacheFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +63,7 @@ public class EditaPlant extends AppCompatActivity {
         editdescription.setText(editText2);
         editcamera.setText(editText3);
 
-
+        cacheFile = new File(this.getFilesDir(), "plants.json");
 
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +72,24 @@ public class EditaPlant extends AppCompatActivity {
                 String plantNameFinal = editname.getText().toString();
                 String plantDescriptionFinal = editdescription.getText().toString();
                 String plantCameraFinal = editcamera.getText().toString();
-                try {
-                    plant.put("name",plantNameFinal);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
+
                 if( !plantNameFinal.isEmpty() && !plantDescriptionFinal.isEmpty() && !plantCameraFinal.isEmpty() ){
+                    try {
+                        plant.put("name",plantNameFinal);
+                        plant.put("decription", plantDescriptionFinal);
+                        plant.put("CameraLink",plantCameraFinal);
+                        // stingify json
+                        String jsonString = json.toString();
+                        // write in the created cacheFile
+                        FileWriter fw = new FileWriter(cacheFile);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        // write the stringified json object
+                        bw.write(jsonString);
+                        bw.close();
+                    } catch (JSONException | IOException e) {
+                        e.printStackTrace();
+                    }
                     openMyPlants();
                 } else {
                    alertUser();
@@ -108,7 +124,7 @@ public class EditaPlant extends AppCompatActivity {
 
     }
     private void openMyPlants(){
-        Intent intent = new Intent(this, myPlants.class);
+        Intent intent = new Intent(this, Dashboard.class);
         startActivity(intent);
     }
     private void alertUser() {
