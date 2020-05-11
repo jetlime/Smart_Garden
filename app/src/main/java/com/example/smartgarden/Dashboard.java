@@ -2,11 +2,14 @@ package com.example.smartgarden;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -38,6 +41,10 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
+
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -50,10 +57,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 
-public class Dashboard extends AppCompatActivity {
+public class Dashboard extends AppCompatActivity implements ExampleDialog.ExampleDialogListerner {
     // init the empty Arraylist names containing Strings
     private ArrayList<String> names ;
     private ArrayAdapter<String> arrayAdapter;
+    public JSONArray jsonArray;
+    public int DeleteCounter ;
     public static final String EXTRA_NUMBER = "com.example.smartgarden.EXTRA_NUMBER";
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -116,40 +125,42 @@ public class Dashboard extends AppCompatActivity {
             String plantName = intent.getStringExtra(AddAPlant.EXTRA_TEXT1);
             String plantDescription = intent.getStringExtra(AddAPlant.EXTRA_TEXT2);
             String plantCamera = intent.getStringExtra(AddAPlant.EXTRA_TEXT3);
-             if(plantName==null){
-                 plantName = "";
-                 plantDescription = "";
-                 plantCamera = "";
-             }
-            // fetch json from asset folder( in order to get the structure)
-            // object jsonPlants is the json from the asset folder
-            JSONObject jsonPlants = new JSONObject(loadJSONFromAsset());
-            JSONArray jsonArray =  jsonPlants.getJSONArray("plants");
-            // create an empty json object
-            JSONObject jsonObj = new JSONObject();
+            // if we didnt add a plant then the
+            // this will avoid to create a new plant each time we go in the dashboard.
+            if(plantName != null) {
+                // load json from internal storage
+                JSONObject jsonPlants = new JSONObject(loadJSONFromInternal());
+                // fetch json from asset folder( in order to get the structure)
+                // object jsonPlants is the json from the asset folder
+                JSONArray jsonArray = jsonPlants.getJSONArray("plants");
 
-            try {
-                // put the input of the user in this new json object
-                jsonObj.put("name", plantName);
-                jsonObj.put("decription", plantDescription );
-                jsonObj.put("CameraLink", plantCamera );
 
-                // put the new json object into the json array
-                jsonArray = jsonArray.put(jsonObj);
-                jsonPlants = jsonPlants.put("plants", jsonArray);
-            } catch (JSONException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                // create an empty json object
+                JSONObject jsonObj = new JSONObject();
+
+                try {
+                    // put the input of the user in this new json object
+                    jsonObj.put("name", plantName);
+                    jsonObj.put("decription", plantDescription);
+                    jsonObj.put("CameraLink", plantCamera);
+
+                    // put the new json object into the json array
+                    jsonArray = jsonArray.put(jsonObj);
+                    jsonPlants = jsonPlants.put("plants", jsonArray);
+                } catch (JSONException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                // stingify json
+                String jsonString = jsonPlants.toString();
+                // write in the created cacheFile
+                FileWriter fw = new FileWriter(cacheFile);
+                BufferedWriter bw = new BufferedWriter(fw);
+                // write the stringified json object
+                bw.write(jsonString);
+                bw.close();
+                // new json is now in internal storage
             }
-            // stingify json
-            String jsonString = jsonPlants.toString();
-            // write in the created cacheFile
-            FileWriter fw = new FileWriter(cacheFile);
-            BufferedWriter bw = new BufferedWriter(fw);
-            // write the stringified json object
-            bw.write(jsonString);
-            bw.close();
-            // new json is now in internal storage
 
         } catch (IOException | JSONException e) {
             e.printStackTrace();
@@ -205,6 +216,18 @@ public class Dashboard extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    DeleteCounter = position;
+                    openDialog();
+                    return true ;
+                }
+            });
+
+
+
+
         } catch (JSONException | FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -212,10 +235,57 @@ public class Dashboard extends AppCompatActivity {
         }
 
 
+
         // inititate a search view
         SearchView searchPlants = (SearchView) findViewById(R.id.searchPlants);
          // call search function
         searchList(searchPlants);
+
+    }
+
+    public void openDialog(){
+        ExampleDialog dialog = new ExampleDialog();
+        dialog.show(getSupportFragmentManager(), "example dialog");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onYesClicked() throws JSONException, IOException {
+        File cacheFile = new File(this.getFilesDir(), "plants.json");
+
+        JSONObject json = new JSONObject(loadJSONFromInternal());
+        JSONArray jsonArray = json.getJSONArray("plants");
+        //JSONObject plant = jsonArray.getJSONObject(DeleteCounter);
+        jsonArray.remove(DeleteCounter);
+        names.remove(DeleteCounter);
+
+        // stingify json
+        String jsonString = json.toString();
+        // write in the created cacheFile
+        FileWriter fw = new FileWriter(cacheFile);
+        BufferedWriter bw = new BufferedWriter(fw);
+        // write the stringified json object
+        bw.write(jsonString);
+        bw.close();
+        // refresh page
+        finish();
+        startActivity(getIntent());
+        String fileContent = "";
+
+        try {
+            String currentLine;
+            BufferedReader br = new BufferedReader(new FileReader(cacheFile));
+            while ((currentLine = br.readLine()) != null) {
+                fileContent += currentLine + '\n';
+            }
+
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            // on exception null will be returned
+            fileContent = null;
+        }
 
     }
 
@@ -239,33 +309,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
 
-    // function to parse json
-    public String loadJSONFromAsset() {
-        // init object json of type string
-        String json = null;
-        try {
-            // open the json file from asset file
-            InputStream is = getAssets().open("plants.json");
-
-            int size = is.available();
-
-            byte[] buffer = new byte[size];
-
-            is.read(buffer);
-
-            is.close();
-
-            json = new String(buffer, "UTF-8");
-
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-
-    }
-    public String loadJSONFromInternal() {
+       public String loadJSONFromInternal() {
         // init object json of type string
         String json = null;
         try {
@@ -290,41 +334,20 @@ public class Dashboard extends AppCompatActivity {
         return json;
 
     }
-    // read from internal storage the json file
-    private String readFromFile() {
-
-        String ret = "";
-        InputStream inputStream = null;
+    public String loadJSONFromAsset() {
+        String json = null;
         try {
-            inputStream = openFileInput("plants.json");
-
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                }
-
-                ret = stringBuilder.toString();
-            }
+            InputStream is = this.getAssets().open("plants.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
         }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-        finally {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return ret;
+        return json;
     }
 
     // function to open add a plant page.

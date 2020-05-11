@@ -26,7 +26,6 @@
         style="@style/TextAppearance.AppCompat.Title"
         android:layout_width="269dp"
         android:layout_height="69dp"
-        android:text="@string/ADDplant"
         android:textSize="30sp"
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/plantDescription"
@@ -68,10 +67,10 @@
 
     <Button
         android:id="@+id/edittheplant"
-        android:layout_width="154dp"
+        android:layout_width="160dp"
         android:layout_height="76dp"
         android:background="@color/colorPrimary"
-        android:text="@string/ADD"
+        android:text="@string/Edit"
         android:textColor="@android:color/white"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"

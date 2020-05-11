@@ -1,19 +1,5 @@
 {
   "plants": [
-    {
-      "name": "Pepper",
-      "decription": "This is a big plant",
-      "CameraLink": "https://messir.uni.lu/bicslab/blab-cam1-snapshots/gallery-images/latest.png"
-    },
-    {
-      "name": "Tomatoe",
-      "decription": "This is a big plant",
-      "CameraLink": "https://messir.uni.lu/bicslab/blab-cam2-snapshots/gallery-images/latest.png"
-    },
-    {
-      "name": "Small Tomato",
-      "decription": "It needs a lot of water",
-      "CameraLink": "https://messir.uni.lu/bicslab/blab-cam3-snapshots/gallery-images/latest.png"
-    }
+
   ]
 }

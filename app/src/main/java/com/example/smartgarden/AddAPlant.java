@@ -2,15 +2,12 @@ package com.example.smartgarden;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class AddAPlant extends AppCompatActivity {
     // create a string constants
@@ -23,7 +20,7 @@ public class AddAPlant extends AppCompatActivity {
         setContentView(R.layout.activity_add_a_plant);
         // Define the add a plant button
         // Once clicked it will call the function addAPlant()
-        Button addplantbutton = (Button) findViewById(R.id.button2);
+        Button addplantbutton = (Button) findViewById(R.id.edittheplant);
 
         addplantbutton.setOnClickListener(new View.OnClickListener() {
             @Override

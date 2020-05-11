@@ -9,6 +9,7 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,12 +26,14 @@ import java.io.InputStream;
 
 public class myPlants extends AppCompatActivity {
     boolean isImageFitToScreen;
+    public static final String EXTRA_NUMBER_EDIT = "com.example.smartgarden.EXTRA_NUMBER_EDIT";
+    public int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_plants);
         Intent intent = getIntent();
-        int position = intent.getIntExtra(Dashboard.EXTRA_NUMBER,0);
+        position = intent.getIntExtra(Dashboard.EXTRA_NUMBER,0);
 
         TextView itemName = (TextView) findViewById(R.id.itemName);
         TextView itemDescription = (TextView) findViewById(R.id.itemDescription);
@@ -70,7 +73,19 @@ public class myPlants extends AppCompatActivity {
             }
 
         });
+        Button editPlant = (Button) findViewById(R.id.editplant);
+        editPlant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openEditAPlant();
+            }
+        });
+    }
 
+    private void openEditAPlant() {
+        Intent intent = new Intent(this, EditaPlant.class);
+        intent.putExtra(EXTRA_NUMBER_EDIT, position);
+        startActivity(intent);
     }
 
     public String loadJSONFromInternal() {
