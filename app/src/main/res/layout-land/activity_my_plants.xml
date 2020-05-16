@@ -13,6 +13,7 @@
         android:layout_width="282dp"
         android:layout_height="77dp"
         android:textSize="40sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.072"
@@ -30,7 +31,8 @@
         app:layout_constraintHorizontal_bias="0.138"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.861" />
+        app:layout_constraintVertical_bias="0.861"
+        tools:visibility="invisible" />
 
     <ImageView
         android:id="@+id/itemPicture"
@@ -51,7 +53,7 @@
         android:layout_height="58dp"
         android:background="#4CAF50"
         android:text="Edit"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

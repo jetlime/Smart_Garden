@@ -20,7 +20,8 @@
         <activity android:name=".imageSendToServer"></activity>
         <activity android:name=".EditaPlant" />
         <activity android:name=".AddAPlant" />
-        <activity android:name=".myPlants" />
+        <activity android:name=".myPlants"
+            android:screenOrientation="fullSensor"/>
         <activity android:name=".Dashboard" />
         <activity android:name=".Settings" />
         <activity android:name=".MainActivity">
