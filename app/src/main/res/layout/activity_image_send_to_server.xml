@@ -42,6 +42,23 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.867" />
+        app:layout_constraintVertical_bias="0.935" />
+
+    <TextView
+        android:id="@+id/plantStatus"
+        android:layout_width="229dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="91dp"
+        android:layout_marginLeft="91dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="91dp"
+        android:layout_marginRight="91dp"
+        android:layout_marginBottom="36dp"
+        android:text="Waiting for response..."
+        android:textSize="22sp"
+        app:layout_constraintBottom_toTopOf="@+id/backhome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TakenImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

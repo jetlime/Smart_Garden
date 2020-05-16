@@ -31,6 +31,7 @@ public class myPlants extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_my_plants);
         Intent intent = getIntent();
         position = intent.getIntExtra(Dashboard.EXTRA_NUMBER,0);

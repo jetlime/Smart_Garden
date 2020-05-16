@@ -4,20 +4,24 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -43,6 +47,7 @@ public class imageSendToServer extends AppCompatActivity {
         ImageView imageSentToServer = (ImageView) findViewById(R.id.TakenImage);
         loadImageFromStorage(path);
         Button backHome = (Button) findViewById(R.id.backhome);
+        final TextView status = (TextView) findViewById(R.id.plantStatus);
         backHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +76,42 @@ public class imageSendToServer extends AppCompatActivity {
             }
         }).start();
 
+
+        final Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try  {
+                    try {
+                        // Create a URL for the desired page
+                        URL url = new URL("https://messir.uni.lu/bicslab/cnn-plant-disease.txt");
+                        Thread.sleep(4000);
+                        // Read all the text returned by the server
+                        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                        String str = in.readLine();
+                        if(str == "blight"){
+                            status.setText("The plant is sick");
+                            status.setTextColor(Color.RED);
+                        } else {
+                            status.setText("The plant is healthy");
+                            status.setTextColor(Color.GREEN);
+                        }
+
+                        in.close();
+                    } catch (MalformedURLException e) {
+
+                    } catch (IOException e) {
+
+
+                    }
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+        });
+
+        thread.start();
     }
 
     private void openHome(){
