@@ -88,7 +88,7 @@ public class imageSendToServer extends AppCompatActivity {
                         // Read all the text returned by the server
                         BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
                         String str = in.readLine();
-                        if(str == "blight"){
+                        if("blight".equals(str)){
                             status.setText("The plant is sick");
                             status.setTextColor(Color.RED);
                         } else {

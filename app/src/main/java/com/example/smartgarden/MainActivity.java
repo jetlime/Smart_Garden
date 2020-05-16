@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
                         for(int i=1; i<5;i++){
                             str = in.readLine();
-                            if(str == "ok"){
+                            if("ok".equals(str)){
                                 str = "Lamp is on";
                                 lamp1.setTextColor(Color.GREEN);
                                 lamp2.setTextColor(Color.GREEN);
