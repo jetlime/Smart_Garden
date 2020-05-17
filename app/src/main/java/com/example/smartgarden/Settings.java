@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Switch;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -36,6 +38,31 @@ public class Settings extends AppCompatActivity {
                         return true;
                 }
                 return false;
+            }
+        });
+        final Switch cameraPermission = (Switch) findViewById(R.id.cameraPermission);
+        final Switch locationPermission = (Switch) findViewById(R.id.locationPermission);
+
+        cameraPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cameraPermission.isChecked()){
+                    cameraPermission.setText("Camera permission is on");
+                } else {
+                    cameraPermission.setText("Camera permission is off");
+                }
+            }
+        });
+
+        locationPermission.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(locationPermission.isChecked()){
+                    locationPermission.setText("Location manager is on");
+                } else {
+                    locationPermission.setChecked(false);
+                    locationPermission.setText("Location manager is off");
+                }
             }
         });
     }
