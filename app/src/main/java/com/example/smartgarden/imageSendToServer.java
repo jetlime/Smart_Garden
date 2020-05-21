@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.DrmInitData;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +35,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class imageSendToServer extends AppCompatActivity {
@@ -41,6 +49,7 @@ public class imageSendToServer extends AppCompatActivity {
     ProgressDialog dialog = null ;
     String path = "data/data/com.example.smartgarden/app_imageDir";
     int serverResponseCode;
+    File f ;
     ImageView imageSentToServer;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -57,7 +66,7 @@ public class imageSendToServer extends AppCompatActivity {
                 openHome();
             }
         });
-        File f=new File(path, "profile.jpg");
+        f=new File(path, "profile.jpg");
         HttpURLConnection conn = null;
         URL url = null;
 
@@ -119,7 +128,24 @@ public class imageSendToServer extends AppCompatActivity {
     }
 
     private void uplaodImage() {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/"), f);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("newImage", f.getName(), requestBody);
+        RequestBody somedata = RequestBody.create(MediaType.parse("text/plain"),"This is a new image");
+        NetworkClient networkclass = new NetworkClient();
+        Retrofit retrofit = networkclass.getRetrofit();
+        UploadAPI uploadAPI = retrofit.create(UploadAPI.class);
+        Call call = uploadAPI.uploadImage(part, somedata);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
 
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+
+            }
+        });
     }
 
     private void openHome(){

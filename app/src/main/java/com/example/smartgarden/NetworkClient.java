@@ -6,9 +6,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NetworkClient {
     private static Retrofit retrofit;
-    private static String BASE_URL = "www.zkjhze.com";
+    private static String BASE_URL = "https://messir.uni.lu/bicslab/tmp/";
 
-    private static Retrofit getRetrofit(){
+    static Retrofit getRetrofit(){
         OkHttpClient okHttpClient = new OkHttpClient.Builder().build();
         if( retrofit == null){
         retrofit = new Retrofit.Builder().baseUrl(BASE_URL).addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build();
