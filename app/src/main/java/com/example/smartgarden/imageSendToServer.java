@@ -63,7 +63,7 @@ public class imageSendToServer extends AppCompatActivity {
 
 
         // send file to server
-
+        uplaodImage();
        //url = new URL("https://messir.uni.lu/bicslab/tmp/");
 
         // wait for image to uplaod
@@ -116,6 +116,10 @@ public class imageSendToServer extends AppCompatActivity {
         });
 
         thread.start();
+    }
+
+    private void uplaodImage() {
+
     }
 
     private void openHome(){
