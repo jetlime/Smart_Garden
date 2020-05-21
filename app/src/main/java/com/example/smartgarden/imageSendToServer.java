@@ -7,60 +7,34 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.FileUtils;
-
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.internal.http.multipart.MultipartEntity;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
-import retrofit2.http.PUT;
-
-import static com.android.volley.Request.Method.POST;
 
 public class imageSendToServer extends AppCompatActivity {
     String upLoadServerUri;
@@ -68,14 +42,6 @@ public class imageSendToServer extends AppCompatActivity {
     String path = "data/data/com.example.smartgarden/app_imageDir";
     int serverResponseCode;
     ImageView imageSentToServer;
-
-
-
-    public imageSendToServer() throws MalformedURLException {
-
-    }
-
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,40 +58,34 @@ public class imageSendToServer extends AppCompatActivity {
             }
         });
         File f=new File(path, "profile.jpg");
-        String url = "http://localhost:3000/image";
+        HttpURLConnection conn = null;
+        URL url = null;
 
-        // convert file to base 64 string
 
-        String base64Image = "";
-        /*
-        try (FileInputStream imageInFile = new FileInputStream(f)) {
-            // Reading a Image file from file system
-            byte imageData[] = new byte[(int) f.length()];
-            imageInFile.read(imageData);
-            //base64Image = Base64.getEncoder().encodeToString(imageData);
-        } catch (FileNotFoundException e) {
-            System.out.println("Image not found" + e);
-        } catch (IOException ioe) {
-            System.out.println("Exception while reading the Image " + ioe);
-        }
+        // send file to server
 
-        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        nameValuePairs.add(new BasicNameValuePair("base64", base64Image));
-        nameValuePairs.add(new BasicNameValuePair("ImageName", System.currentTimeMillis() + ".jpg"));
-        */
+       //url = new URL("https://messir.uni.lu/bicslab/tmp/");
 
+        // wait for image to uplaod
+
+        // execute the php script in order to execute the AI programm
         try {
-            /*
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(url);
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            HttpResponse response = httpclient.execute(httppost);
-            */
+            URL phpurl = new URL("https://messir.uni.lu/bicslab/cnn-plant-disease.php");
+            HttpURLConnection connection = (HttpURLConnection) phpurl.openConnection();
+            connection.connect();
 
-        } catch (Exception e) {
-            Log.v("log_tag", "Error in http connection " + e.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+
+
+
+
+
+        // fetch the output from the txt file.
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
