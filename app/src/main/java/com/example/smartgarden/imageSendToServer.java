@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.RequiresApi;
@@ -47,6 +48,7 @@ import retrofit2.Retrofit;
 public class imageSendToServer extends AppCompatActivity {
     String upLoadServerUri;
     ProgressDialog dialog = null ;
+    TextView status;
     String path = "data/data/com.example.smartgarden/app_imageDir";
     int serverResponseCode;
     File f ;
@@ -59,7 +61,7 @@ public class imageSendToServer extends AppCompatActivity {
         imageSentToServer = (ImageView) findViewById(R.id.TakenImage);
         loadImageFromStorage(path);
         Button backHome = (Button) findViewById(R.id.backhome);
-        final TextView status = (TextView) findViewById(R.id.plantStatus);
+        status = (TextView) findViewById(R.id.plantStatus);
         backHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,22 +130,21 @@ public class imageSendToServer extends AppCompatActivity {
     }
 
     private void uplaodImage() {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/"), f);
+        RequestBody requestBody = RequestBody.create(MediaType.parse(""), f);
         MultipartBody.Part part = MultipartBody.Part.createFormData("newImage", f.getName(), requestBody);
         RequestBody somedata = RequestBody.create(MediaType.parse("text/plain"),"This is a new image");
-        NetworkClient networkclass = new NetworkClient();
-        Retrofit retrofit = networkclass.getRetrofit();
+        Retrofit retrofit = NetworkClient.getRetrofit();
         UploadAPI uploadAPI = retrofit.create(UploadAPI.class);
         Call call = uploadAPI.uploadImage(part, somedata);
         call.enqueue(new Callback() {
             @Override
             public void onResponse(Call call, Response response) {
-
+                status.setText("obtained response");
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
-
+                status.setText("no response");
             }
         });
     }

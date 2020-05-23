@@ -2,12 +2,17 @@ package com.example.smartgarden;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
+
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -42,11 +47,20 @@ public class Settings extends AppCompatActivity {
         });
         final Switch cameraPermission = (Switch) findViewById(R.id.cameraPermission);
         final Switch locationPermission = (Switch) findViewById(R.id.locationPermission);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            cameraPermission.setChecked(false);
+        } else {
+            cameraPermission.setChecked(true);
+        }
 
         cameraPermission.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(cameraPermission.isChecked()){
+                    ActivityCompat.requestPermissions(Settings.this,
+                            new String[] { Manifest.permission.CAMERA },
+                            100);
                     cameraPermission.setText("Camera permission is on");
                 } else {
                     cameraPermission.setText("Camera permission is off");
