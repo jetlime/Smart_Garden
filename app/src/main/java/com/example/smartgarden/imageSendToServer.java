@@ -1,27 +1,19 @@
 package com.example.smartgarden;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.DrmInitData;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
 
@@ -46,19 +38,15 @@ import retrofit2.Retrofit;
 
 
 public class imageSendToServer extends AppCompatActivity {
-    String upLoadServerUri;
-    ProgressDialog dialog = null ;
     TextView status;
     String path = "data/data/com.example.smartgarden/app_imageDir";
-    int serverResponseCode;
     File f ;
-    ImageView imageSentToServer;
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_send_to_server);
-        imageSentToServer = (ImageView) findViewById(R.id.TakenImage);
+        ImageView imageSentToServer = (ImageView) findViewById(R.id.TakenImage);
         loadImageFromStorage(path);
         Button backHome = (Button) findViewById(R.id.backhome);
         status = (TextView) findViewById(R.id.plantStatus);

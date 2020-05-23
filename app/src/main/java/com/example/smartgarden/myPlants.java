@@ -4,14 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -19,7 +16,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +24,7 @@ import java.io.InputStream;
 public class myPlants extends AppCompatActivity {
     boolean isImageFitToScreen;
     public static final String EXTRA_NUMBER_EDIT = "com.example.smartgarden.EXTRA_NUMBER_EDIT";
-    public int position;
+    public static int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,8 +33,8 @@ public class myPlants extends AppCompatActivity {
         Intent intent = getIntent();
         position = intent.getIntExtra(Dashboard.EXTRA_NUMBER,0);
 
-        TextView itemName = (TextView) findViewById(R.id.itemName);
-        TextView itemDescription = (TextView) findViewById(R.id.itemDescription);
+        final TextView itemName = (TextView) findViewById(R.id.itemName);
+        final TextView itemDescription = (TextView) findViewById(R.id.itemDescription);
         final ImageView itemPicture = (ImageView) findViewById(R.id.itemPicture);
         // fetch json in order to get information about the clicked plant
         // the position of the clicked plant in the json file is stored in the variable "position"

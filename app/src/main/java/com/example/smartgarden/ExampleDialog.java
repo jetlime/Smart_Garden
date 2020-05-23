@@ -5,15 +5,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
-
 import org.json.JSONException;
-
 import java.io.IOException;
-import java.security.KeyStore;
 
 public class ExampleDialog extends AppCompatDialogFragment {
     private ExampleDialogListerner listener ;

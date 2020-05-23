@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,14 +22,10 @@ import java.io.InputStream;
 
 public class EditaPlant extends AppCompatActivity {
     int positionEdit;
-    String plantName;
-    String plantDescription;
-    String plantCamera;
     String editText1;
     String editText2;
     String editText3;
     JSONObject json;
-    JSONArray plantArray;
     JSONObject plant;
     File cacheFile;
     @Override
@@ -48,7 +42,7 @@ public class EditaPlant extends AppCompatActivity {
 
         try {
             json = new JSONObject(loadJSONFromInternal());
-            plantArray = json.getJSONArray("plants");
+            JSONArray plantArray = json.getJSONArray("plants");
             plant = plantArray.getJSONObject(positionEdit);
             editText1 = plant.getString("name");
             editText2 = plant.getString("decription");
