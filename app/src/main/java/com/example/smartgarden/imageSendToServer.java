@@ -14,6 +14,13 @@ import android.widget.TextView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+
 
 import java.io.BufferedReader;
 
@@ -27,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -35,6 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.http.Url;
 
 
 public class imageSendToServer extends AppCompatActivity {
@@ -63,31 +72,30 @@ public class imageSendToServer extends AppCompatActivity {
 
         // send file to server
         uplaodImage();
-       //url = new URL("https://messir.uni.lu/bicslab/tmp/");
 
         // wait for image to uplaod
 
         // execute the php script in order to execute the AI programm
-        try {
-            URL phpurl = new URL("https://messir.uni.lu/bicslab/cnn-plant-disease.php");
-            HttpURLConnection connection = (HttpURLConnection) phpurl.openConnection();
-            connection.connect();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-
 
         // fetch the output from the txt file.
         final Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    URL phpfile = new URL("https://messir.uni.lu/bicslab/cnn-plant-disease.php");
+                    URLConnection yc = phpfile.openConnection();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null)
+                        System.out.println(inputLine);
+                    in.close();
+                } catch (MalformedURLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 try  {
                     try {
                         // Create a URL for the desired page
