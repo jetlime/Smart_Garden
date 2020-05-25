@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Switch;
 
 
@@ -47,6 +48,7 @@ public class Settings extends AppCompatActivity {
         });
         final Switch cameraPermission = (Switch) findViewById(R.id.cameraPermission);
         final Switch locationPermission = (Switch) findViewById(R.id.locationPermission);
+        final Button sendMailButton = (Button) findViewById(R.id.SendMail);
         if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
             cameraPermission.setChecked(false);
@@ -77,6 +79,18 @@ public class Settings extends AppCompatActivity {
                     locationPermission.setChecked(false);
                     locationPermission.setText("Location manager is off");
                 }
+            }
+        });
+
+        sendMailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("plain/text");
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] { "paul.houssel.001@student.uni.lu" });
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Smart Garden Application");
+                intent.putExtra(Intent.EXTRA_TEXT, "Explain your problem");
+                startActivity(Intent.createChooser(intent, ""));
             }
         });
     }
